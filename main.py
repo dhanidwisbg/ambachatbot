@@ -4,7 +4,7 @@ import time
 
 # Constants
 HF_API_URL = "https://api-inference.huggingface.co/models/unsloth/Llama-3.2-1B-bnb-4bit"
-HF_API_TOKEN = "your_huggingface_token"  # Replace with your actual Hugging Face API token
+HF_API_TOKEN = "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"  # Replace with your actual Hugging Face API token
 
 headers = {"Authorization": f"Bearer {HF_API_TOKEN}"}
 
