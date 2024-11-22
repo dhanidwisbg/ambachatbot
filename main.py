@@ -2,8 +2,7 @@ import streamlit as st
 import requests
 
 # Konfigurasi API Hugging Face
-HF_API_URL = "https://api-inference.huggingface.co/models/unsloth/Llama-3.2-1B-bnb-4bit"
-"  # Model URL
+HF_API_URL = "https://api-inference.huggingface.co/models/unsloth/Llama-3.2-1B-bnb-4bit" # Model URL
 HF_API_TOKEN = "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"  # Masukkan token Anda di sini
 
 headers = {"Authorization": f"Bearer {HF_API_TOKEN}"}
