@@ -1,42 +1,17 @@
 import streamlit as st
-import requests
-import time
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
+import torch
 
-# Constants
-HF_API_URL = "https://api-inference.huggingface.co/models/Xenova/gpt2"
-HF_API_TOKEN = "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"  # Replace with your actual Hugging Face API token
+# Path to your local model directory
+model_download_dir = "path/to/your/model_download_dir"
 
-headers = {"Authorization": f"Bearer {HF_API_TOKEN}"}
-
-# Function to generate text
-def generate_text(prompt, max_tokens=100, temperature=0.7, top_k=50, top_p=0.9):
-    payload = {
-        "inputs": prompt,
-        "parameters": {
-            "max_new_tokens": max_tokens,
-            "temperature": temperature,
-            "top_k": top_k,
-            "top_p": top_p
-        }
-    }
-
-    for _ in range(5):  # Retry up to 5 times
-        response = requests.post(HF_API_URL, headers=headers, json=payload)
-        if response.status_code == 200:
-            return response.json()[0]["generated_text"]
-        elif response.status_code == 503:
-            st.warning("Model is still loading. Retrying in 10 seconds...")
-            time.sleep(10)  # Wait for 10 seconds before retrying
-        else:
-            st.error(f"Error: {response.status_code}, {response.text}")
-            return None
-
-    st.error("Failed to generate text after multiple attempts.")
-    return None
+# Load the model and tokenizer from the local directory
+tokenizer = GPT2Tokenizer.from_pretrained(model_download_dir)
+model = GPT2LMHeadModel.from_pretrained(model_download_dir)
 
 # Streamlit UI
-st.title("Hugging Face Text Generation with GPT-2 Model")
-st.write("Generate text using the `Xenova/gpt2` model hosted on Hugging Face.")
+st.title("Text Generation with Local GPT-2 Model")
+st.write("Generate text using a local GPT-2 model.")
 
 # Input for user prompt
 prompt = st.text_area("Enter your prompt:", placeholder="Type something...")
@@ -48,6 +23,27 @@ with st.sidebar:
     temperature = st.slider("Temperature", min_value=0.1, max_value=1.0, value=0.7, step=0.1)
     top_k = st.slider("Top-k Sampling", min_value=0, max_value=100, value=50, step=10)
     top_p = st.slider("Top-p Sampling", min_value=0.1, max_value=1.0, value=0.9, step=0.1)
+
+# Function to generate text from the local model
+def generate_text(prompt, max_tokens=100, temperature=0.7, top_k=50, top_p=0.9):
+    # Encode the prompt to get input IDs
+    inputs = tokenizer.encode(prompt, return_tensors="pt")
+    
+    # Generate text using the local model
+    with torch.no_grad():
+        output = model.generate(
+            inputs,
+            max_length=max_tokens + len(inputs[0]),  # Adjust max length for the prompt length
+            temperature=temperature,
+            top_k=top_k,
+            top_p=top_p,
+            num_return_sequences=1,
+            no_repeat_ngram_size=2,  # Avoid repetition
+        )
+    
+    # Decode the generated output to text
+    generated_text = tokenizer.decode(output[0], skip_special_tokens=True)
+    return generated_text
 
 # Generate button
 if st.button("Generate"):
