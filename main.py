@@ -1,12 +1,11 @@
-import streamlit as st
-from transformers import GPT2LMHeadModel, GPT2Tokenizer
+from transformers import AutoTokenizer, GPT2LMHeadModel
 import torch
 
 # Path to your local model directory
 model_download_dir = "./model_download_dir"  # Path to the folder where model is stored
 
 # Load the model and tokenizer from the local directory
-tokenizer = GPT2Tokenizer.from_pretrained(model_download_dir)
+tokenizer = AutoTokenizer.from_pretrained(model_download_dir)
 model = GPT2LMHeadModel.from_pretrained(model_download_dir)
 
 # Streamlit UI
