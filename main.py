@@ -16,9 +16,8 @@ def generate_text(prompt, max_tokens=100, temperature=0.7, top_k=50, top_p=0.9):
             "max_new_tokens": max_tokens,
             "temperature": temperature,
             "top_k": top_k,
-            "top_p": top_p,
-        },
-        "options": {"wait_for_model": True},
+            "top_p": top_p
+        }
     }
 
     for _ in range(5):  # Retry up to 5 times
@@ -36,8 +35,8 @@ def generate_text(prompt, max_tokens=100, temperature=0.7, top_k=50, top_p=0.9):
     return None
 
 # Streamlit UI
-st.title("Hugging Face Text Generation with Llama Model")
-st.write("Generate text using the `unsloth/Llama-3.2-1B-bnb-4bit` model hosted on Hugging Face.")
+st.title("Hugging Face Text Generation with GPT-2 Model")
+st.write("Generate text using the `Xenova/gpt2` model hosted on Hugging Face.")
 
 # Input for user prompt
 prompt = st.text_area("Enter your prompt:", placeholder="Type something...")
